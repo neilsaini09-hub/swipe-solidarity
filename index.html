@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swipe Solidarity — UNC System</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f9f9f7;color:#1a1a18}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid #e5e5e0;background:#fff}
+  .logo{display:flex;align-items:center;gap:10px}
+  .logo-icon{width:28px;height:28px;border-radius:6px;background:#1D9E75;display:flex;align-items:center;justify-content:center}
+  .logo-icon svg{width:16px;height:16px;fill:white}
+  .logo-text{font-size:15px;font-weight:500;color:#1a1a18}
+  .logo-sub{font-size:11px;color:#888}
+  .nav-links{display:flex;gap:8px}
+  .nav-link{font-size:13px;padding:6px 12px;border-radius:8px;border:1px solid transparent;color:#666;cursor:pointer;background:none}
+  .nav-link:hover{background:#f1f1ee;color:#1a1a18}
+  .nav-link.active{border-color:#d0d0c8;color:#1a1a18;background:#f1f1ee}
+  .hero{padding:40px 24px 32px;border-bottom:1px solid #e5e5e0;background:#fff}
+  .hero-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:4px 10px;border-radius:20px;background:#E1F5EE;color:#0F6E56;margin-bottom:14px}
+  .hero-badge-dot{width:6px;height:6px;border-radius:50%;background:#1D9E75}
+  h1{font-size:26px;font-weight:500;color:#1a1a18;line-height:1.3;margin-bottom:8px}
+  .hero-sub{font-size:15px;color:#666;max-width:540px;line-height:1.6;margin-bottom:24px}
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:480px}
+  .stat-card{background:#f1f1ee;border-radius:8px;padding:14px 16px}
+  .stat-num{font-size:22px;font-weight:500;color:#1a1a18}
+  .stat-label{font-size:12px;color:#888;margin-top:2px}
+  .main{padding:24px;background:#f9f9f7;min-height:400px}
+  .tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:1px solid #e5e5e0;padding-bottom:0}
+  .tab{font-size:13px;padding:8px 16px;border:none;background:none;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tab.active{color:#1D9E75;border-bottom-color:#1D9E75;font-weight:500}
+  .panel{display:none}
+  .panel.active{display:block}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+  .form-group{display:flex;flex-direction:column;gap:6px}
+  .form-group.full{grid-column:1/-1}
+  label{font-size:13px;color:#555;font-weight:500}
+  select,input{font-size:14px;padding:8px 12px;border-radius:8px;border:1px solid #d0d0c8;background:#fff;color:#1a1a18;width:100%}
+  select:focus,input:focus{outline:none;border-color:#1D9E75;box-shadow:0 0 0 2px rgba(29,158,117,0.15)}
+  .swipe-selector{display:flex;align-items:center;gap:12px;margin-top:4px}
+  .swipe-btn{width:32px;height:32px;border-radius:50%;border:1px solid #d0d0c8;background:#f1f1ee;color:#1a1a18;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+  .swipe-btn:hover{background:#fff;border-color:#1D9E75;color:#1D9E75}
+  .swipe-count{font-size:22px;font-weight:500;min-width:32px;text-align:center;color:#1a1a18}
+  .swipe-label{font-size:13px;color:#888}
+  .submit-btn{width:100%;padding:11px;border-radius:8px;border:none;background:#1D9E75;color:white;font-size:14px;font-weight:500;cursor:pointer;margin-top:8px}
+  .submit-btn:hover{background:#0F6E56}
+  .success-box{display:none;background:#E1F5EE;border:1px solid #5DCAA5;border-radius:12px;padding:20px;text-align:center;margin-top:12px}
+  .success-icon{width:40px;height:40px;border-radius:50%;background:#1D9E75;margin:0 auto 10px;display:flex;align-items:center;justify-content:center}
+  .success-icon svg{width:20px;height:20px;fill:white}
+  .success-title{font-size:15px;font-weight:500;color:#085041;margin-bottom:4px}
+  .success-sub{font-size:13px;color:#0F6E56}
+  .campus-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+  .campus-card{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:14px 16px}
+  .campus-name{font-size:13px;font-weight:500;color:#1a1a18;margin-bottom:8px}
+  .campus-bar-wrap{background:#f1f1ee;border-radius:4px;height:6px;margin-bottom:6px}
+  .campus-bar{height:6px;border-radius:4px;background:#1D9E75}
+  .campus-meta{display:flex;justify-content:space-between;font-size:11px;color:#888}
+  .section-title{font-size:14px;font-weight:500;color:#1a1a18;margin-bottom:14px}
+  .how-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+  .step{background:#f1f1ee;border-radius:12px;padding:16px}
+  .step-num{font-size:11px;font-weight:500;color:#0F6E56;background:#E1F5EE;padding:2px 8px;border-radius:10px;display:inline-block;margin-bottom:8px}
+  .step-title{font-size:13px;font-weight:500;color:#1a1a18;margin-bottom:4px}
+  .step-desc{font-size:12px;color:#666;line-height:1.5}
+  .request-info{background:#E6F1FB;border:1px solid #B5D4F4;border-radius:12px;padding:16px;margin-bottom:16px;font-size:13px;color:#185FA5;line-height:1.6}
+  .request-info strong{color:#0C447C}
+  .disclaimer{font-size:12px;color:#888;margin-top:12px;line-height:1.6}
+  .about-text{font-size:14px;color:#666;line-height:1.8;max-width:600px}
+  @media(max-width:600px){
+    .form-grid{grid-template-columns:1fr}
+    .form-group.full{grid-column:1}
+    .how-steps{grid-template-columns:1fr}
+    .stats-row{grid-template-columns:1fr 1fr}
+    .nav-links{display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 2a5 5 0 110 10A5 5 0 018 3zm-1 2v4l3 1.5-.5 1L6 9.5V5h1z"/></svg>
+    </div>
+    <div>
+      <div class="logo-text">Swipe Solidarity</div>
+      <div class="logo-sub">UNC System &middot; 17 campuses</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="switchTab('donate');setActive(this)">Donate</button>
+    <button class="nav-link" onclick="switchTab('request');setActive(this)">Request</button>
+    <button class="nav-link" onclick="switchTab('campuses');setActive(this)">Campuses</button>
+    <button class="nav-link" onclick="switchTab('about');setActive(this)">About</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge"><div class="hero-badge-dot"></div>Live across all 17 UNC-system campuses</div>
+  <h1>No student should go<br>hungry between classes.</h1>
+  <p class="hero-sub">Swipe Solidarity lets students donate unused meal swipes to peers facing food insecurity — instantly, anonymously, and across every UNC-system campus.</p>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" id="s-donated">4,821</div><div class="stat-label">swipes donated</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-students">1,203</div><div class="stat-label">students helped</div></div>
+    <div class="stat-card"><div class="stat-num">17</div><div class="stat-label">campuses</div></div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="tabs">
+    <button class="tab active" id="tab-donate" onclick="switchTab('donate')">Donate swipes</button>
+    <button class="tab" id="tab-request" onclick="switchTab('request')">Request swipes</button>
+    <button class="tab" id="tab-campuses" onclick="switchTab('campuses')">Campus activity</button>
+    <button class="tab" id="tab-about" onclick="switchTab('about')">How it works</button>
+  </div>
+
+  <!-- DONATE -->
+  <div class="panel active" id="panel-donate">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Your campus</label>
+        <select id="donate-campus">
+          <option value="">Select campus</option>
+          <option>NC School of Science and Mathematics</option>
+          <option>UNC Chapel Hill</option>
+          <option>NC State University</option>
+          <option>UNC Charlotte</option>
+          <option>UNC Greensboro</option>
+          <option>Appalachian State University</option>
+          <option>East Carolina University</option>
+          <option>NC A&T State University</option>
+          <option>NC Central University</option>
+          <option>UNC Asheville</option>
+          <option>UNC Pembroke</option>
+          <option>UNC Wilmington</option>
+          <option>Western Carolina University</option>
+          <option>Winston-Salem State University</option>
+          <option>Elizabeth City State University</option>
+          <option>Fayetteville State University</option>
+          <option>UNC School of the Arts</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Student ID (last 4 digits)</label>
+        <input type="text" placeholder="e.g. 4821" maxlength="4" id="donate-id">
+      </div>
+      <div class="form-group full">
+        <label>Number of swipes to donate</label>
+        <div class="swipe-selector">
+          <button class="swipe-btn" onclick="changeSwipes(-1)">&#8722;</button>
+          <span class="swipe-count" id="swipe-val">1</span>
+          <span class="swipe-label">swipe(s)</span>
+          <button class="swipe-btn" onclick="changeSwipes(1)">+</button>
+        </div>
+      </div>
+      <div class="form-group full">
+        <label>Send to (optional)</label>
+        <select id="donate-target">
+          <option value="any">Any student in need</option>
+          <option>Same campus priority</option>
+          <option>HBCU/MSI campuses priority</option>
+          <option>Rural campus priority</option>
+        </select>
+      </div>
+    </div>
+    <button class="submit-btn" onclick="submitDonate()">Donate swipes</button>
+    <div class="success-box" id="donate-success">
+      <div class="success-icon"><svg viewBox="0 0 20 20"><path d="M16.7 5.3l-8.4 8.4-4-4 1.4-1.4 2.6 2.6 7-7z"/></svg></div>
+      <div class="success-title">Thank you for your donation!</div>
+      <div class="success-sub" id="donate-success-msg">Your swipes have been added to the pool.</div>
+    </div>
+  </div>
+
+  <!-- REQUEST -->
+  <div class="panel" id="panel-request">
+    <div class="request-info">
+      <strong>Confidential:</strong> All requests are handled anonymously. Your information is only shared with your campus dining office to process the transfer.
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Your campus</label>
+        <select id="req-campus">
+          <option value="">Select campus</option>
+          <option>NC School of Science and Mathematics</option>
+          <option>UNC Chapel Hill</option>
+          <option>NC State University</option>
+          <option>UNC Charlotte</option>
+          <option>UNC Greensboro</option>
+          <option>Appalachian State University</option>
+          <option>East Carolina University</option>
+          <option>NC A&T State University</option>
+          <option>NC Central University</option>
+          <option>UNC Asheville</option>
+          <option>UNC Pembroke</option>
+          <option>UNC Wilmington</option>
+          <option>Western Carolina University</option>
+          <option>Winston-Salem State University</option>
+          <option>Elizabeth City State University</option>
+          <option>Fayetteville State University</option>
+          <option>UNC School of the Arts</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Student ID</label>
+        <input type="text" placeholder="Campus ID number" id="req-id">
+      </div>
+      <div class="form-group full">
+        <label>Swipes needed</label>
+        <div class="swipe-selector">
+          <button class="swipe-btn" onclick="changeReqSwipes(-1)">&#8722;</button>
+          <span class="swipe-count" id="req-swipe-val">3</span>
+          <span class="swipe-label">swipe(s) &middot; max 7 per request</span>
+          <button class="swipe-btn" onclick="changeReqSwipes(1)">+</button>
+        </div>
+      </div>
+      <div class="form-group full">
+        <label>Timeframe needed</label>
+        <select>
+          <option>This week</option>
+          <option>This month</option>
+          <option>Rest of semester</option>
+        </select>
+      </div>
+    </div>
+    <button class="submit-btn" onclick="submitRequest()">Submit request</button>
+    <div class="success-box" id="req-success">
+      <div class="success-icon"><svg viewBox="0 0 20 20"><path d="M16.7 5.3l-8.4 8.4-4-4 1.4-1.4 2.6 2.6 7-7z"/></svg></div>
+      <div class="success-title">Request submitted</div>
+      <div class="success-sub">Your campus dining office will load swipes to your account within 24 hours.</div>
+    </div>
+    <p class="disclaimer">Requests are reviewed by your campus Dean of Students office. You may submit up to 2 requests per semester. This program is funded entirely by student donations.</p>
+  </div>
+
+  <!-- CAMPUSES -->
+  <div class="panel" id="panel-campuses">
+    <div class="section-title">Swipe activity by campus</div>
+    <div class="campus-grid" id="campus-grid"></div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="panel" id="panel-about">
+    <div class="section-title">How it works</div>
+    <div class="how-steps">
+      <div class="step">
+        <div class="step-num">Step 1</div>
+        <div class="step-title">Students donate</div>
+        <div class="step-desc">Any student with unused meal swipes can contribute any amount — even just one. Donations are anonymous.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 2</div>
+        <div class="step-title">Requests are reviewed</div>
+        <div class="step-desc">Students in need submit a confidential request. Campus Dean of Students offices review and approve within 24 hours.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">Step 3</div>
+        <div class="step-title">Swipes are transferred</div>
+        <div class="step-desc">Approved swipes are loaded directly to the student's campus dining account — no stigma, no in-person pickup required.</div>
+      </div>
+    </div>
+    <div class="section-title">About this initiative</div>
+    <p class="about-text">
+      Swipe Solidarity was proposed to the UNC Association of Student Governments (UNCASG) as a system-wide expansion of meal swipe donation pilots already running at individual campuses. Research shows that over 30% of UNC students experience food insecurity at some point during their studies. This portal serves as the unified infrastructure to make peer-to-peer food support available across all 17 institutions — regardless of whether a student's home campus has its own program.
+      <br><br>
+      This initiative was developed as part of NCSSM's Director of State Relations proposal for the 2026&ndash;2027 academic year.
+    </p>
+  </div>
+</div>
+
+<script>
+  let swipes = 1, reqSwipes = 3;
+
+  const campuses = [
+    {name:"UNC Chapel Hill",donated:1240,pct:88},
+    {name:"NC State",donated:980,pct:74},
+    {name:"UNC Charlotte",donated:720,pct:61},
+    {name:"NC A&T",donated:510,pct:55},
+    {name:"NCSSM",donated:310,pct:48},
+    {name:"UNC Greensboro",donated:290,pct:42},
+    {name:"Appalachian State",donated:270,pct:39},
+    {name:"East Carolina",donated:220,pct:35},
+    {name:"WSSU",donated:180,pct:31},
+    {name:"NC Central",donated:160,pct:28},
+    {name:"UNC Asheville",donated:140,pct:26},
+    {name:"UNC Wilmington",donated:120,pct:22},
+    {name:"Fayetteville State",donated:110,pct:20},
+    {name:"Western Carolina",donated:90,pct:17},
+    {name:"UNC Pembroke",donated:75,pct:15},
+    {name:"UNCSA",donated:50,pct:12},
+    {name:"Elizabeth City State",donated:45,pct:10}
+  ];
+
+  function buildCampuses() {
+    const g = document.getElementById('campus-grid');
+    g.innerHTML = campuses.map(c => `
+      <div class="campus-card">
+        <div class="campus-name">${c.name}</div>
+        <div class="campus-bar-wrap"><div class="campus-bar" style="width:${c.pct}%"></div></div>
+        <div class="campus-meta"><span>${c.donated} donated</span><span>${c.pct}% capacity</span></div>
+      </div>`).join('');
+  }
+  buildCampuses();
+
+  function changeSwipes(d) {
+    swipes = Math.max(1, Math.min(10, swipes + d));
+    document.getElementById('swipe-val').textContent = swipes;
+  }
+
+  function changeReqSwipes(d) {
+    reqSwipes = Math.max(1, Math.min(7, reqSwipes + d));
+    document.getElementById('req-swipe-val').textContent = reqSwipes;
+  }
+
+  function switchTab(name) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    document.getElementById('tab-' + name).classList.add('active');
+  }
+
+  function setActive(el) {
+    document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function submitDonate() {
+    const campus = document.getElementById('donate-campus').value;
+    const id = document.getElementById('donate-id').value;
+    if (!campus || !id) { alert('Please fill in your campus and student ID.'); return; }
+    const current = parseInt(document.getElementById('s-donated').textContent.replace(/,/g, ''));
+    document.getElementById('s-donated').textContent = (current + swipes).toLocaleString();
+    const target = document.getElementById('donate-target').value.toLowerCase();
+    document.getElementById('donate-success-msg').textContent = `${swipes} swipe${swipes > 1 ? 's' : ''} added to the pool for ${target}.`;
+    const box = document.getElementById('donate-success');
+    box.style.display = 'block';
+    setTimeout(() => { box.style.display = 'none'; }, 4000);
+  }
+
+  function submitRequest() {
+    const campus = document.getElementById('req-campus').value;
+    const id = document.getElementById('req-id').value;
+    if (!campus || !id) { alert('Please fill in your campus and student ID.'); return; }
+    const box = document.getElementById('req-success');
+    box.style.display = 'block';
+    setTimeout(() => { box.style.display = 'none'; }, 4000);
+  }
+</script>
+</body>
+</html>
